@@ -6,18 +6,18 @@ set -euo pipefail #safety line
 
 VERSION=0.1.0
 
-installed=$(apt-mark showmanual)
+installed=${*:-$(apt-mark showmanual)}
 #installed=$(apt list --manually-installed)
 
 for i in $installed; do
     for j in $installed; do
-        found=false;
-        echo -n . 
+        unset found;
+        echo -n .
         if $(apt-cache rdepends -i $j | grep -q "^\s\+$i$" ); then
-            found=true; 
+            found=$j;
             #printf '\nfound %s in %s\n' $i $j
             break
         fi
     done
-    [ $found ] && echo $j || echo $i
+    echo \n${found:-$i}
 done
